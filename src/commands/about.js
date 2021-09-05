@@ -12,7 +12,7 @@ module.exports = {
         msg.channel.send(Embed(msg.author, true)
             .setAuthor(author)
             .setTitle(`**${name}** ${version}`)
-            .setDescription(description)
+            .setDescription(description + "\n\nhttps://github.com/PixlBrosG/PixlBot")
         );
     }
 }
