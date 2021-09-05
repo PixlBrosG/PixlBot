@@ -1,0 +1,11 @@
+{
+    "prefix": "$",
+    "embedColor": "#ff0000",
+    "games": {
+        "minesweeper": {
+            "rows": 9,
+            "cols": 9,
+            "mines": 15
+        }
+    }
+}
