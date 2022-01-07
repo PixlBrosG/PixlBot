@@ -1,6 +1,6 @@
 {
   "name": "pixlbot",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "No",
   "main": "./src/index.js",
   "author": "Pixl",
@@ -12,10 +12,10 @@
     "@discordjs/opus": "github:discordjs/opus",
     "discord.js": "^12.5.3",
     "dotenv": "^10.0.0",
-    "ffmpeg-static": "^4.4.0",
+    "ffmpeg-static": "^4.4.1",
     "fs": "^0.0.1-security",
     "node-fetch": "^2.6.1",
-    "yt-search": "^2.10.1",
-    "ytdl-core": "^4.9.1"
+    "yt-search": "^2.10.3",
+    "ytdl-core": "^4.9.2"
   }
 }
