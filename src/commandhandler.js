@@ -25,7 +25,7 @@ module.exports = async function (msg)
 	if (!msg.content.startsWith(prefix)) return messageHandler(msg);
 
 	let tokens = msg.content.substring(prefix.length).split(/\s+/);
-	
+
 	if (!commands[tokens[0]]) {
 		let a = false;
 		for (let c of commandList) {
