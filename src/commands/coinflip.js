@@ -1,15 +1,13 @@
-const { RandInt, Embed } = require('../API.js');
+export const name = 'coinflip';
+export const category = 'games';
+export const description = 'Flip a coin';
+export const usage = '';
+export const aliases = ['cf'];
+export const permissions = [];
 
-module.exports = {
-	name: 'coinflip',
-	class: 'games',
-	description: 'Flip a coin',
-	usage: '',
-	aliases: ['cf'],
-	permissions: [],
-	execute(msg, _args)
-	{
-		let result = RandInt(0, 2) == 1 ? "Heads" : "Tails";
-		msg.channel.send(Embed(msg.author).setDescription(`:coin: **${result}**`));
-	}
+import { RandInt } from '../API.js';
+
+export function execute()
+{
+    return `:coin: **${RandInt(2) ? 'Heads' : 'Tails'}**`;
 }

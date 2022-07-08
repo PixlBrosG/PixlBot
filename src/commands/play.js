@@ -1,118 +1,134 @@
-const ytdl = require('ytdl-core');
-const ytSearch = require('yt-search');
+// Uses youtube instead of spotify
 
-const { ParseTime, ParseVideo, Embed, songQueue } = require('../API.js');
+export const name = 'play';
+export const category = 'music';
+export const description = 'Play music';
+export const usage = '<query|URL>';
+export const aliases = ['p'];
+export const permissions = [];
 
-async function VideoFinder(query) {
-	const result = await ytSearch(query);
-	return result.videos.length > 0 ? result.videos[0] : null;
+import { video_basic_info, stream, search, yt_validate } from 'play-dl';
+
+import { AudioPlayerStatus, joinVoiceChannel, createAudioPlayer, createAudioResource } from "@discordjs/voice";
+import { ParseVideo, Embed } from '../API.js';
+import { songQueue } from '../index.js';
+
+async function VideoFinder(query)
+{
+	let result = (await search(query, { source: { "youtube": "video" } }));
+	return result[0] ? result[0] : null;
 }
 
-function videoPlayer(guildId, song)
+async function VideoPlayer(guildId)
 {
-	let queue = songQueue.get(guildId);
+	if (!songQueue.has(guildId)) return;
+	const queue = songQueue.get(guildId);
 
+	const song = queue.songs[0];
 	if (!song)
 	{
-		queue.voiceChannel.leave();
+		queue.connection.disconnect();
+		queue.connection.destroy();
 		songQueue.delete(guildId);
 		return;
 	}
 
-	let stream = ytdl(song.url, { filter: 'audioonly' });
-	queue.connection.play(stream, { seek: 0, volume: 1 })
-	.on('finish', () =>
-	{
-		if (queue.replay)
-			queue.songs.push(queue.songs[0]);
-		queue.songs.shift();
-		videoPlayer(guildId, queue.songs[0]);
-	});
+	const source = await stream(song.url, { discordPlayerCompatibility: true });
+	const resource = createAudioResource(source.stream, { inputType: source.inputType });
 
-	queue.textChannel.send(Embed(song.added_by)
+	queue.audioPlayer.play(resource);
+
+	let embed = Embed(song.addedBy)
 		.setDescription(`:notes: Now playing ${ParseVideo(song)}`)
-		.setThumbnail(song.thumbnail_url));
+		.setThumbnail(song.thumbnailURL);
+	queue.textChannel.send({ embeds: [embed] });
 }
 
-module.exports = {
-	name: 'play',
-	class: 'music',
-	description: 'Play music',
-	usage: '<query|link>',
-	aliases: ['p'],
-	permissions: [],
+export async function execute(msg, args)
+{
+	let voiceChannel = msg.member.voice.channel;
+	
+	if (!voiceChannel)
+	return 'You need to be in a voice channel to execute this command';
+	if (!args[0])
+	return 'Please specify a song';
+	
+	let queue = songQueue.get(msg.guild.id);
+	let song = {};
 
-	async execute(msg, args)
+	if (args[0].startsWith('https') && yt_validate(args[0]) === 'video')
 	{
-		let embed = Embed(msg.author);
-		let voiceChannel = msg.member.voice.channel;
+		let info = (await video_basic_info(args[0])).video_details;
 
-		if (!voiceChannel) return msg.channel.send(embed.setDescription("You need to be in a voice channel to execute this command"));
-		if (!args[0]) return msg.channel.send(embed.setDescription("Please specify a song"));
-
-		let queue = songQueue.get(msg.guild.id);
-		let song = {};
-
-		if (ytdl.validateURL(args[0]))
-		{
-			let info = await ytdl.getInfo(args[0]);
-			song = {
-				title: info.videoDetails.title,
-				url: info.videoDetails.video_url,
-				thumbnail_url: info.thumbnail_url,
-				length: ParseTime(info.videoDetails.lengthSeconds),
-				added_by: msg.author
-			};
-		}
-		else
-		{
-			let video = await VideoFinder(args.join(' '));
-
-			if (video)
-			{
-				song = {
-					title: video.title,
-					url: video.url,
-					thumbnail_url: video.thumbnail,
-					length: video.timestamp,
-					added_by: msg.author
-				};
+		song = {
+			title: info.title,
+			url: info.url,
+			thumbnailURL: info.thumbnails[0].url,
+			length: info.durationRaw,
+			addedBy: {
+				tag: msg.author.tag,
+				iconURL: msg.author.displayAvatarURL()
 			}
-			else
-			{
-				msg.channel.send(embed.setDescription("Error finding video!"));
-			}
-		}
+		};
+	}
+	else
+	{
+		let video = await VideoFinder(args.join(' '));
 
-		if (!queue)
-		{
-			try
-			{
-				songQueue.set(msg.guild.id, {
-					voiceChannel: voiceChannel,
-					textChannel: msg.channel,
-					connection: await voiceChannel.join(),
-					replay: false,
-					songs: [song]
-				});
+		if (!video)
+			return 'Error while finding video!';
 
-				msg.channel.send(embed.
-					setDescription(`Added ${ParseVideo(song)} to queue!`)
-					.setThumbnail(song.thumbnail_url));
-				videoPlayer(msg.guild.id, song);
+		song = {
+			title: video.title,
+			url: video.url,
+			thumbnailURL: video.thumbnails[0].url,
+			length: video.durationRaw,
+			addedBy: {
+				tag: msg.author.tag,
+				iconURL: msg.author.displayAvatarURL()
 			}
-			catch (err)
-			{
-				msg.channel.send(embed.setDescription('Error connecting to voice channel!'));
-				console.error(err);
-			}
-		}
-		else
-		{
-			queue.songs.push(song);
-			msg.channel.send(embed
-				.setDescription(`Added ${ParseVideo(song)} to queue!`)
-				.setThumbnail(song.thumbnail_url));
 		}
 	}
+
+	let embed = Embed(msg.author).setDescription(`Added ${ParseVideo(song)} to queue!`)
+		.setThumbnail(song.thumbnailURL);
+	msg.channel.send({ embeds: [embed] });
+
+	if (queue)
+	{
+		queue.songs.push(song);
+		return;
+	}
+
+	let serverQueue = {
+		textChannel: msg.channel,
+		connection: joinVoiceChannel({
+			channelId: voiceChannel.id,
+			guildId: msg.guild.id,
+			adapterCreator: msg.guild.voiceAdapterCreator
+		}),
+		audioPlayer: createAudioPlayer(),
+		replay: false,
+		songs: [song]
+	}
+
+	serverQueue.connection.subscribe(serverQueue.audioPlayer);
+	songQueue.set(msg.guild.id, serverQueue);
+
+	VideoPlayer(msg.guild.id);
+
+	serverQueue.audioPlayer.on(AudioPlayerStatus.Idle, () =>
+	{
+		if (serverQueue.replay)
+			serverQueue.songs.push(song);
+		serverQueue.songs.shift();
+		VideoPlayer(msg.guild.id);
+	});
+
+	serverQueue.audioPlayer.on(AudioPlayerStatus.AutoPaused, () =>
+	{
+		serverQueue.connection.disconnect();
+		serverQueue.connection.destroy();
+		songQueue.delete(guildId);
+	});
 }

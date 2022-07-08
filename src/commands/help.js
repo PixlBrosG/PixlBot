@@ -1,67 +1,62 @@
-const { prefix } = require('../config.json');
-const { Embed } = require('../API.js');
+export const name = 'help';
+export const category = 'commands';
+export const description = 'Shows a list of commands';
+export const usage = '[<category>]';
+export const aliases = ['?'];
+export const permissions = [];
 
-const { readdirSync } = require('fs');
+import cfg from '../config.json' assert { type: 'json' };
+import { Embed } from '../API.js';
 
-const exp = {
-    name: 'help',
-    description: 'Shows a list of commands',
-    usage: '[class]',
-    aliases: ['?'],
-    permissions: []
-}
+import { readdirSync } from 'fs';
 
-const classes = ['commands', 'utility', 'games', 'music'];
-let commands = { main: { }, class: { } };
+let commandData = {};
+let commands = {}
 
-for (let i = 0; i < classes.length; i++)
+for (let i of ['commands', 'utility', 'games', 'music'])
 {
-    commands.main[classes[i]] = [];
-    commands.class[classes[i]] = { };
+	commandData[i] = {};
+	commands[i] = '';
 }
+
+commands[category] = `\`${name}\``;
+
+commandData[category][`${cfg.prefix}${name} ${usage}`] = `${description}` +
+	(permissions.length > 0 ? `\nPermissions: \`${permissions.join(', ')}\`` : '') +
+	(aliases.length > 0 ? `\nAliases: \`${aliases.join(', ')}\`` : '');
 
 for (let file of readdirSync('./src/commands/').filter(file => file.endsWith('.js') && file != 'help.js'))
 {
-    let cmd = require(`./${file}`);
-    commands.main[cmd.class].push({
-        name: cmd.name,
-        description: cmd.description,
-        usage: cmd.usage,
-        permissions: cmd.permissions,
-        aliases: cmd.aliases
-    });
-}
-commands.main.commands.push(exp);
+	import(`./${file}`).then(cmd =>
+	{
+		if (commands[cmd.category] != '') commands[cmd.category] += ', ';
+		commands[cmd.category] += `\`${cmd.name}\``;
 
-for (let i = 0; i < classes.length; i++)
-{
-    let cmds = "";
-    for (let cmd of commands.main[classes[i]]) {
-        commands.class[classes[i]][cmd.name] = [`${prefix}${cmd.name} ${cmd.usage}`,
-            `${cmd.description}` +
-            (cmd.permissions.length > 0 ? `\nPermissions: \`${cmd.permissions.join(', ')}\``: '') +
-            (cmd.aliases.length > 0 ? `\nAliases: \`${cmd.aliases.join(', ')}\`` : '')];
-        if (cmds != '') cmds += ', ';
-        cmds += `\`${cmd.name}\``;
-    }
-    commands.main[classes[i]] = cmds;
+		commandData[cmd.category][`${cfg.prefix}${cmd.name} ${cmd.usage}`] = `${cmd.description}` +
+			(cmd.permissions.length > 0 ? `\nPermissions: \`${cmd.permissions.join(', ')}\`` : '') +
+			(cmd.aliases.length > 0 ? `\nAliases: \`${cmd.aliases.join(', ')}\`` : '');
+	});
 }
 
-module.exports = exp;
-
-module.exports.execute = (msg, args) =>
+export function execute(msg, args)
 {
-    if (!args[0] || !commands.main[args[0].toLowerCase()])
-    {
-        let embed = Embed(msg.author)
-            .setTitle('**Help!**')
-            .setDescription(`***${prefix}help class*** *for more info*`);
-        for (let c of classes) embed = embed.addField(c, commands.main[c]);
-        return msg.channel.send(embed);
-    }
+	if (!args[0] || !commands[args[0].toLowerCase()])
+	{
+		let embed = Embed(msg.author)
+			.setTitle('**Help!**')
+			.setDescription(`***${cfg.prefix}help <class>*** *for more info*`);
 
-    let embed = Embed(msg.author).setTitle(args[0].toLowerCase());
-    for (let c of Object.values(commands.class[args[0].toLowerCase()]))
-        embed = embed.addField(c[0], c[1], true);
-    return msg.channel.send(embed);
+		for (let [k, v] of Object.entries(commands))
+			if (v.length > 0)
+				embed.addField(k, v);
+		msg.channel.send({ embeds: [embed] });
+		return;
+	}
+
+	let category = args[0].toLowerCase();
+
+	let embed = Embed(msg.author).setTitle(category);
+	for (let [k, v] of Object.entries(commandData[category]))
+		embed.addField(k, v, true);
+	msg.channel.send({ embeds: [embed] });
 }

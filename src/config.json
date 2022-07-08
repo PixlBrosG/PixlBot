@@ -1,6 +1,8 @@
 {
 	"prefix": "$",
 	"embedColor": "#ff0000",
+	"logCommands": false,
+	"logMessages": false,
 	"games": {
 		"minesweeper": {
 			"rows": 9,
@@ -8,30 +10,26 @@
 			"mines": 15
 		}
 	},
-	"chat": {
-		"responses": {
-			"question": [
-				"yes",
-				"no",
-				"i really dont care",
-				"hell no",
-				"why u asking?",
-				"definitely",
-				"haha u idiot",
-				"idk",
-				"what do u think?"
-			],
-			"statement": [
-				"thank u",
-				"u too lol",
-				"how rude",
-				"nobody asked",
-				"uh... ok...?",
-				"why u bully me",
-				"lol",
-				"you damn right",
-				"no u"
-			]
-		}
+	"chatResponses": {
+		"question": [
+			"yes",
+			"no",
+			"hell no",
+			"definitely",
+			"haha u idiot",
+			"idk"
+		],
+		"statement": [
+			"thank u",
+			"u too lol",
+			"how rude",
+			"nobody asked",
+			"uh... ok...?",
+			"why u bully me",
+			"lol",
+			"you damn right",
+			"no u",
+			"<3"
+		]
 	}
 }

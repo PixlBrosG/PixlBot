@@ -1,20 +1,19 @@
-const { Embed } = require('../API.js');
+export const name = 'ping';
+export const category = 'utility';
+export const description = 'Pong!';
+export const usage = '';
+export const aliases = ['pong'];
+export const permissions = [];
 
-module.exports = {
-	name: 'ping',
-	class: 'utility',
-	description: 'Pong!',
-	usage: '',
-	aliases: ['pong'],
-	permissions: [],
-	async execute(msg, args)
-	{
-		let embed = Embed(msg.author).setTitle(':ping_pong: **Pong!**');
+import { Embed } from '../API.js';
 
-		m = await msg.channel.send(embed);
+export async function execute(msg, _)
+{
+	let embed = Embed(msg.author).setTitle(':ping_pong: **Pong!**');
 
-		let ping = m.createdTimestamp - msg.createdTimestamp;
-		m.edit(embed.setDescription(`${ping} ms`));
-		console.log(`${ping} ms`);
-	}
+	let m = await msg.channel.send({ embeds: [embed] });
+
+	let ping = m.createdTimestamp - msg.createdTimestamp;
+	embed.setDescription(`${ping} ms`);
+	m.edit({ embeds: [embed] });
 }

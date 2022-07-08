@@ -1,36 +1,46 @@
-const { prefix } = require("./config.json");
+import cfg from './config.json' assert { type: 'json' };
 
-const messageHandler = require("./messageHandler.js");
-const { Embed } = require("./API.js");
+import MessageHandler from './messagehandler.js';
+import { Embed } from './API.js';
 
-const { readdirSync } = require('fs');
+import { readdirSync } from 'fs';
+
+import { performance } from 'perf_hooks';
 
 let commands = {};
-let commandList = [];
 
-for (const file of readdirSync('./src/commands/').filter(file => file.endsWith('.js'))) {
-	let cmd = require(`./commands/${file}`);
-	commands[cmd.name] = {
-		cmd: cmd.execute,
-		class: cmd.class,
-		permissions: cmd.permissions,
-		aliases: cmd.aliases
-	};
-	commandList.push(cmd.name);
+for (let file of readdirSync('./src/commands/').filter(file => file.endsWith('.js')))
+{
+	let startTime = performance.now();
+
+	import(`./commands/${file}`).then(cmd =>
+	{
+		commands[cmd.name] = {
+			cmd: cmd.execute,
+			permissions: cmd.permissions,
+			aliases: cmd.aliases
+		};
+	});
+
+	let time = performance.now() - startTime;
+	console.log(`Loaded ${file} in ${time} ms`);
 }
 
-module.exports = async function (msg)
+export default(msg) =>
 {
 	if (msg.author.bot || !msg.channel) return;
-	if (!msg.content.startsWith(prefix)) return messageHandler(msg);
+	if (!msg.content.startsWith(cfg.prefix)) return MessageHandler(msg);
 
-	let tokens = msg.content.substring(prefix.length).split(/\s+/);
+	let tokens = msg.content.substring(cfg.prefix.length).split(/\s+/);
 
-	if (!commands[tokens[0]]) {
+	if (!commands[tokens[0]])
+	{
 		let a = false;
-		for (let c of commandList) {
-			if (commands[c].aliases.includes(tokens[0])) {
-				tokens[0] = c;
+		for (let k of Object.keys(commands))
+		{
+			if (commands[k].aliases.includes(tokens[0]))
+			{
+				tokens[0] = k;
 				a = true;
 				break;
 			}
@@ -38,20 +48,35 @@ module.exports = async function (msg)
 		if (!a) return;
 	}
 
-	if (typeof commands[tokens[0]].cmd != "function") return;
+	if (typeof commands[tokens[0]].cmd != 'function') return;
 
-	if (!msg.channel.guild.member(msg.author).hasPermission(commands[tokens[0]].permissions))
-		return msg.channel.send('Nope');
+	if (!msg.member.permissions.has(commands[tokens[0]].permissions))
+	{
+		let embed = Embed(msg.author).setTitle('Nope.');
+		msg.channel.send({ embeds: [ embed ] });
+		return;
+	}
 
-	console.info(`${msg.guild.name} > ${msg.author.tag} > ${msg.content}`);
+	if (cfg.logCommands)
+		console.info(`${msg.guild.name} > ${msg.author.tag} > ${msg.content}`);
 
 	try
 	{
-		commands[tokens[0]].cmd(msg, tokens.splice(1));
+		let txt = commands[tokens[0]].cmd(msg, tokens.splice(1));
+
+		if (typeof txt == 'string')
+		{
+			let embed = Embed(msg.author).setDescription(txt);
+			msg.channel.send({ embeds: [embed] });
+		}
 	}
 	catch (e)
 	{
-		msg.channel.send(Embed(msg.author).setTitle("An error has occured!").setDescription("Sorry for the inconvenience.\nthe idiot dev **might** try to fix the issue\nhopefully..."));
+		let embed = Embed(msg.author).setTitle('An error has occured');
+		embed = embed.setDescription('Sorry for the inconvenience');
+
+		msg.channel.send({ embeds: [ embed ] });
+		console.warn(msg.content);
 		console.error(e);
 	}
 }

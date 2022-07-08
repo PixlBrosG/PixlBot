@@ -1,42 +1,31 @@
-const { embedColor } = require('./config.json');
-const bot = require('./index.js');
+import cfg from './config.json' assert { type: 'json' };
 
-const { MessageEmbed } = require('discord.js');
+import { MessageEmbed } from 'discord.js';
 
-module.exports = {
-	Embed(author, thumbnail = false)
-	{
-		let embed = new MessageEmbed()
-			.setFooter(`Requested by ${author.tag}`, author.displayAvatarURL())
-			.setColor(embedColor);
-		return thumbnail ? embed.setThumbnail(bot.client.user.displayAvatarURL()) : embed;
-	},
+export function Embed(author)
+{
+	let embed = new MessageEmbed().setColor(cfg.embedColor);
 
-	RandInt(min, max)
-	{
-		return Math.floor(Math.random() * (max - min)) + min;
-	},
-	
-	ParseTime(length)
-	{
-		length = parseInt(length);
+	return embed.setFooter({
+		text: `Requested by ${author.tag}`,
+		iconURL: author.iconURL ? author.iconURL : author.displayAvatarURL()
+	});
+}
 
-		if (isNaN(length))
-			throw `Time should be an integer\nParseTime(${length})`;
+export function RandInt(...args)
+{
+	let min = args[1] ? args[0] : 0;
+	let max = args[1] ? args[1] : args[0];
 
-		let hours = Math.floor(length/3600);
-		let minutes = Math.floor(length/60)%60;
-		let seconds = length%60;
-		let result = '';
-		if (hours > 0) result += `${hours}:`;
-		if (minutes > 0) result += `${minutes}:`;
-		return result + seconds.toString();
-	},
+	return Math.floor(Math.random() * (max - min)) + min;
+}
 
-	ParseVideo(video)
-	{
-		return `[${video.title}](${video.url})`;
-	},
+export function Choice(list)
+{
+	return list[Math.floor(Math.random() * list.length)];
+}
 
-	songQueue: new Map()
+export function ParseVideo(video)
+{
+	return `[${video.title}](${video.url})`;
 }

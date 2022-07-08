@@ -1,34 +1,34 @@
-const { RandInt, Embed } = require("./API.js");
-const { chat } = require("./config.json");
+import cfg from './config.json' assert { type: 'json' };
 
-module.exports = async function(msg)
+import { RandInt, Embed } from './API.js';
+
+const id = '<@744015666029396028>';
+
+export default(msg) =>
 {
 	let tokens = msg.content.split(/\s+/);
 
-	let user = msg.mentions.users.first();
-	let member = msg.guild.member(user);
+	if (tokens[0] !== id) return;
 
-	if (!member) return;
-
+	if (cfg.logMessages)
+		console.info(`${msg.author.tag} > ${msg.content}`);
+	
 	let embed = Embed(msg.author);
 
-	if (tokens[0] === "<@!744015666029396028>")
+	if (msg.content.endsWith('?'))
 	{
-		console.log(`${msg.author.tag} > ${msg.content}`);
+		let options = cfg.chatResponses.question;
+		let index = RandInt(options.length);
 
-		if (msg.content.endsWith('?'))
-		{
-			let options = chat.responses.question;
-			let index = RandInt(0, options.length);
-
-			msg.channel.send(embed.setTitle(":thinking: Lemme think...").setDescription(options[index]));
-		}
-		else
-		{
-			let options = chat.responses.statement;
-			let index = RandInt(0, options.length);
-
-			msg.channel.send(embed.setTitle(":upside_down: oh...").setDescription(options[index]));
-		}
+		embed.setTitle(':thinking: Lemme think...').setDescription(options[index]);
 	}
+	else
+	{
+		let options = cfg.chatResponses.statement;
+		let index = RandInt(options.length);
+
+		embed.setTitle(':upside_down: oh...').setDescription(options[index]);
+	}
+
+	msg.channel.send({ embeds: [ embed ] });
 }

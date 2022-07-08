@@ -2,5 +2,7 @@
 
 title Pixlbot
 color 0a
-node src/index.js
+
+node --experimental-json-modules src/index
+
 pause >nul

@@ -1,34 +1,27 @@
-const { Embed } = require('../API.js');
+export const name = 'suggest';
+export const category = 'commands';
+export const description = 'Suggest bot features';
+export const usage = '<suggestion>';
+export const aliases = [];
+export const permissions = [];
 
-const { writeFile, readFileSync } = require('fs');
+import { appendFileSync } from 'fs';
 
-module.exports = {
-	name: 'suggest',
-	class: 'commands',
-	description: 'Suggest bot features',
-	usage: '<suggestion>',
-	aliases: [],
-	permissions: [],
-	async execute(msg, args)
-	{
-		let embed = Embed(msg.author, args.length > 0);
+import { Embed } from '../API.js';
+import { client } from '../index.js';
 
-		if (args.length == 0)
-			return msg.channel.send(embed.setDescription('Please specify a suggestion!'));
+export function execute(msg, args)
+{
+	if (args.length == 0)
+		return 'Please specify a suggestion';
+	args = args.join(' ');
 
-		let filePath = `${__dirname}/../../suggestions.txt`;
+	const filePath = `suggestions.txt`;
+	appendFileSync(filePath,`${msg.author.tag} > ${args}\n`);
 
-		writeFile(
-			filePath,
-			`${readFileSync(filePath, { encoding: 'utf-8' })}${msg.author.tag} > ${args.join(' ')}\n`,
-			err => {
-				if (err) return msg.channel.send(embed.setDescription('Failed to send suggestion'));
-			}
-		);
-
-		msg.channel.send(embed
-			.setTitle('Suggestion received')
-			.setDescription(args.join(' '))
-		);
-	}
+	let embed = Embed(msg.author)
+		.setTitle('Suggestion received')
+		.setDescription(args)
+		.setThumbnail(client.user.displayAvatarURL());
+	msg.channel.send({ embeds: [embed] });
 }

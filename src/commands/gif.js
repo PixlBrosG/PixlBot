@@ -1,20 +1,20 @@
-const { RandInt } = require('../API.js');
+export const name = 'gif';
+export const category = 'commands';
+export const description = 'Send a GIF!';
+export const usage = '[<query>]';
+export const aliases = [];
+export const permissions = [];
 
-const fetch = require('node-fetch');
-require('dotenv').config();
+import {} from 'dotenv/config';
+import fetch from 'node-fetch';
 
-module.exports = {
-	name: 'gif',
-	class: 'commands',
-	description: 'Send a GIF!',
-	usage: '[query]',
-	aliases: [],
-	permissions: [],
-	async execute(msg, args)
-	{
-		let result = (await (await fetch(`https://g.tenor.com/v1/search?q=${args.join('%20')}&key=${process.env.TENORAPIKEY}`)).json()).results;
-		result = result[RandInt(0, result.length)].url
-		console.log(result);
-		msg.channel.send(result);
-	}
+import { RandInt } from '../API.js';
+
+export async function execute(msg, args)
+{
+	let url = `https://g.tenor.com/v1/search?q=${args.join('%20')}&key=${process.env.TENORAPIKEY}`;
+	let result = (await (await fetch(url)).json()).results;
+	result = result[RandInt(result.length)].url;
+
+	msg.channel.send({ content: result });
 }

@@ -1,15 +1,14 @@
-const { Embed } = require('../API.js');
+export const name = 'reverse';
+export const category = 'commands';
+export const description = 'Reverse some message';
+export const usage = '<message>';
+export const aliases = [];
+export const permissions = [];
 
-module.exports = {
-	name: 'reverse',
-	class: 'commands',
-	description: 'Reverse some message',
-	usage: '<string>',
-	aliases: [],
-	permissions: [],
-	execute(msg, args)
-	{
-		if (args.length == 0) return msg.channel.send(Embed(msg.author).setDescription('!esrever ot agassem a yficepS'));
-		msg.channel.send(Embed(msg.author).setDescription(args.join(' ').split('').reverse().join('')));
-	}
+export function execute(_, args)
+{
+	if (args.length == 0)
+		return 'esrever ot agassem a yficeps esaelP';
+
+	return args.reverse().join(' ');
 }

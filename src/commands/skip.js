@@ -1,17 +1,17 @@
-const { songQueue, Embed } = require('../API.js');
+export const name = 'skip';
+export const category = 'music';
+export const description = 'Skip song';
+export const usage = '';
+export const aliases = ['s'];
+export const permissions = [];
 
-module.exports = {
-	name: 'skip',
-	class: 'music',
-	description: 'Skip song',
-	usage: '',
-	aliases: ['s'],
-	permissions: [],
-	async execute(msg, args)
-	{
-		if (!msg.member.voice.channel)
-			return msg.channel.send(Embed(msg.author).setDescription('You need to be in a channel to execute this command!'));
-		songQueue.get(msg.guild.id).connection.dispatcher.end();
-		msg.channel.send(Embed(msg.author).setDescription(':fast_forward: Skipped song!'));
-	}
+import { songQueue } from '../index.js';
+
+export function execute(msg, _)
+{
+	if (!songQueue.has(msg.guild.id))
+		return 'Server queue is empty';
+
+	songQueue.get(msg.guild.id).audioPlayer.stop();
+	return ':fast_forward: Skipped song!';
 }

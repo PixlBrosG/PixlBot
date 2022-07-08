@@ -1,14 +1,18 @@
-const CommandHandler = require('./commandhandler.js');
+import CommandHandler from './commandhandler.js';
 
-require('dotenv').config();
+import cfg from './config.json' assert { type: 'json' };
 
-const Discord = require('discord.js');
-const client = new Discord.Client();
+import {} from 'dotenv/config';
+
+export const songQueue = new Map();
+
+import { Client, Intents } from 'discord.js';
+export const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
 
 function UpdateStatus()
 {
-	client.user.setActivity(`${require('./config.json').prefix}help`, {
-		type: "LISTENING"
+	client.user.setActivity(`${cfg.prefix}help`, {
+		type: 'LISTENING'
 	});
 }
 
@@ -16,11 +20,10 @@ client.on('ready', () =>
 {
 	console.log(`Logged in as ${client.user.tag}`);
 	UpdateStatus();
-	setInterval(UpdateStatus, 3600000);
+	const interval = 3600 * 1000;
+	setInterval(UpdateStatus, interval);
 });
 
-client.on('message', CommandHandler)
+client.on('messageCreate', CommandHandler);
 
 client.login(process.env.TOKEN);
-
-module.exports.client = client;

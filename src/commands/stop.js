@@ -1,21 +1,23 @@
-const { songQueue, Embed } = require('../API.js');
+export const name = 'stop';
+export const category = 'music';
+export const description = 'Stop music';
+export const usage = '';
+export const aliases = [];
+export const permissions = [];
 
-module.exports = {
-	name: 'stop',
-	class: 'music',
-	description: 'Stop music',
-	usage: '',
-	aliases: [],
-	permissions: [],
-	async execute(msg, _args)
-	{
-		let embed = Embed(msg.author);
+import { songQueue } from '../index.js';
 
-		if (!msg.member.voice.channel) return msg.channel.send(embed.setDescription('You need to be in a channel to execute this command!'));
-		if (!songQueue.get(msg.guild.id)) return msg.channel.send(embed.setDescription('Server queue is empty!'));
+export function execute(msg, _)
+{
+	if (!msg.member.voice.channel)
+		return 'You need to be in a voice channel to execute this command';
 
-		songQueue.get(msg.guild.id).songs = [];
-		songQueue.get(msg.guild.id).connection.dispatcher.end();
-		msg.channel.send(embed.setDescription(':stop_button: Stopped!'));
-	}
+	let queue = songQueue.get(msg.guild.id);
+
+	if (!queue)
+		return 'Server queue is empty';
+
+	queue.songs = [];
+	queue.audioPlayer.stop();
+	return ':stop_button: Stopped!';
 }

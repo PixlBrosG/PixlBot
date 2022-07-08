@@ -1,28 +1,28 @@
-const { songQueue, Embed } = require('../API.js');
+export const name = 'remove';
+export const category = 'music';
+export const description = 'Remove song from queue';
+export const usage = '<index>';
+export const aliases = [];
+export const permissions = [];
 
-module.exports = {
-	name: 'remove',
-	class: 'music',
-	description: 'Remove song from song queue',
-	usage: '<index>',
-	aliases: [],
-	permissions: [],
+import { songQueue } from '../index.js';
+import { ParseVideo } from '../API.js';
 
-	execute(msg, args)
-	{
-		if (!msg.member.voice.channel)
-			return msg.channel.send(Embed(msg.author).setDescription("You must be in a voice channel to execute this command!"));
+export function execute(msg, args)
+{
+	let queue = songQueue.get(msg.guild.id);
+	if (!queue)
+		return 'Server queue is empty';
+	
+	let index = args.length >= 1 ? parseInt(args[0]) : NaN;
+	if (isNaN(index))
+		return 'Invalid index';
 
-		if (args.length == 0 || isNaN(parseInt(args[0])))
-			return msg.channel.send(Embed(msg.author).setDescription("Invalid index"));
+	if (queue.songs.length <= index || index <= 0)
+		return 'Index out of range';
 
-		let index = parseInt(args[0]);
+	let title = ParseVideo(queue.songs[index]);
 
-		if (songQueue.get(msg.guild.id).songs.length <= index || index <= 0)
-			return msg.channel.send(Embed(msg.author).setDescription("Index out of range!"))
-
-		let queue = songQueue.get(msg.guild.id);
-		msg.channel.send(Embed(msg.author).setDescription(`Removed ${queue.songs[index].title}`));
-		queue.songs.splice(index, 1);
-	}
+	queue.songs.splice(index, 1);
+	return `Removed ${title} from queue`;
 }

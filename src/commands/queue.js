@@ -1,34 +1,43 @@
-const { songQueue, Embed, ParseVideo } = require('../API.js');
+export const name = 'queue';
+export const category = 'music';
+export const description = 'Song queue';
+export const usage = '';
+export const aliases = ['q'];
+export const permissions = [];
 
-module.exports = {
-	name: 'queue',
-	class: 'music',
-	description: 'Song queue',
-	usage: '',
-	aliases: ['q'],
-	permissions: [],
+import { songQueue } from '../index.js';
+import { Embed, ParseVideo } from '../API.js';
 
-	execute(msg, _args)
+export function execute(msg, _)
+{
+	let queue = songQueue.get(msg.guild.id);
+	let song  = queue.songs[0];
+
+	if (!queue)
+		return 'Server queue is empty';
+
+	let embed = Embed(msg.author).setTitle(`Song queue (${queue.songs.length - 1} tracks)`)
+		.setThumbnail(song.thumbnailURL)
+		.setDescription(`**Currently playing**:\n${ParseVideo(song)} \`${song.length}\``);
+	embed.footer.text += ` - Replay: ${queue.replay ? '✅' : '❌'}`;
+
+	if (queue.songs.length > 1)
 	{
-		let embed = Embed(msg.author);
-		let serverQueue = songQueue.get(msg.guild.id);
+		let indexes = [];
+		let tracks  = [];
+		let lengths = [];
 
-		if (!serverQueue) return msg.channel.send(embed.setDescription('Server queue is empty!'));
-
-		let songs = '';
-
-		if (serverQueue.songs.length > 1)
+		for (let i = 1; i < queue.songs.length; ++i)
 		{
-			songs = '\n\n';
-			for (let i = 1; i < serverQueue.songs.length; ++i)
-				songs += `\`${i}\` ${ParseVideo(serverQueue.songs[i])} \`${serverQueue.songs[i].length}\`\n`;
+			indexes.push(`\`${i}\``);
+			tracks.push(ParseVideo(queue.songs[i]));
+			lengths.push(`\`${queue.songs[i].length}\``);
 		}
 
-		msg.channel.send(embed
-			.setTitle(`Music queue (${serverQueue.songs.length - 1} tracks)`)
-			.setDescription(`**Now playing**:\n${ParseVideo(serverQueue.songs[0])} \`${serverQueue.songs[0].length}\`${songs}`)
-			.setThumbnail(serverQueue.songs[0].thumbnail_url)
-			.setFooter(`${embed.footer.text} - Replay: ${serverQueue.replay ? '✅' : '❌'}`, embed.footer.iconURL)
-		);
+		embed.addField('Index', indexes.join('\n'), true);
+		embed.addField('Track', tracks.join('\n'), true);
+		embed.addField('Length', lengths.join('\n'), true);
 	}
+
+	msg.channel.send({ embeds: [embed] });
 }
