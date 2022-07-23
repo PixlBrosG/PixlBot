@@ -7,7 +7,7 @@ import {} from 'dotenv/config';
 export const songQueue = new Map();
 
 import { Client, Intents } from 'discord.js';
-export const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES] });
+export const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS] });
 
 function UpdateStatus()
 {

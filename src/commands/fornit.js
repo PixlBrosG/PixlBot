@@ -1,5 +1,5 @@
 export const name = 'fortnit';
-export const category = 'commands';
+export const category = 'hidden';
 export const description = 'Fortnit';
 export const usage = '<players>';
 export const aliases = [];
@@ -12,9 +12,9 @@ export function execute(msg, args)
 	if (args.length == 0)
 		return 'Must be at least 1 player';
 
-	let rarities = ['Grå', 'Grønn', 'Blå', 'Epic', 'Legendary', 'idk'];
+	let rarities = ['Gray', 'Green', 'Blue', 'Epic', 'Legendary', 'Any'];
 
-	let weapons = ['Sniper', 'AR', 'Pistol', 'Shotgun', 'SMG', 'idk']
+	let weapons = ['Sniper', 'AR', 'Pistol', 'Shotgun', 'SMG', 'Any']
 
 	let locations = ['Logjam Lotus', 'Rave Cave', 'Reality Falls', 'Greasy Grove',
 					 'Sleepy Sound', 'Shifty Shafts', 'Coney Crossroads', 'Tilted Towers',
@@ -23,8 +23,8 @@ export function execute(msg, args)
 
 	let embed = Embed(msg.author);
 
-	let rarity =  [];
-	let weapon =  [];
+	let rarity   = [];
+	let weapon   = [];
 	let location = [];
 	
 	for (let _ in args)

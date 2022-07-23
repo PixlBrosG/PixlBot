@@ -8,14 +8,14 @@ export const aliases = ['p'];
 export const permissions = [];
 
 import { video_basic_info, stream, search, yt_validate } from 'play-dl';
-
 import { AudioPlayerStatus, joinVoiceChannel, createAudioPlayer, createAudioResource } from "@discordjs/voice";
+
 import { ParseVideo, Embed } from '../API.js';
 import { songQueue } from '../index.js';
 
 async function VideoFinder(query)
 {
-	let result = (await search(query, { source: { "youtube": "video" } }));
+	let result = await search(query, { source: { "youtube": "video" } });
 	return result[0] ? result[0] : null;
 }
 
@@ -49,9 +49,9 @@ export async function execute(msg, args)
 	let voiceChannel = msg.member.voice.channel;
 	
 	if (!voiceChannel)
-	return 'You need to be in a voice channel to execute this command';
+		return 'You need to be in a voice channel to execute this command';
 	if (!args[0])
-	return 'Please specify a song';
+		return 'Please specify a song';
 	
 	let queue = songQueue.get(msg.guild.id);
 	let song = {};

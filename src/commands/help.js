@@ -29,6 +29,8 @@ for (let file of readdirSync('./src/commands/').filter(file => file.endsWith('.j
 {
 	import(`./${file}`).then(cmd =>
 	{
+		if (cmd.category == 'hidden') return;
+
 		if (commands[cmd.category] != '') commands[cmd.category] += ', ';
 		commands[cmd.category] += `\`${cmd.name}\``;
 
