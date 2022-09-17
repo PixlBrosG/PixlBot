@@ -1,12 +1,10 @@
-export const name = 'remove';
-export const category = 'music';
 export const description = 'Remove song from queue';
 export const usage = '<index>';
 export const aliases = [];
 export const permissions = [];
 
-import { songQueue } from '../index.js';
-import { ParseVideo } from '../API.js';
+import { songQueue } from 'pixlbot/src/index.js';
+import { ParseVideo } from 'pixlbot/src/API.js';
 
 export function execute(msg, args)
 {

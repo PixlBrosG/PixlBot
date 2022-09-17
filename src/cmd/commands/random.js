@@ -1,11 +1,9 @@
-export const name = 'random';
-export const category = 'commands';
 export const description = 'random integer from <min> to <max>';
-export const usage = '(<min> <max>)|<max>';
+export const usage = '[<min>] <max>';
 export const aliases = [];
 export const permissions = [];
 
-import { Embed, RandInt } from '../API.js';
+import { Embed, RandInt } from '../../API.js';
 
 export function execute(msg, args)
 {

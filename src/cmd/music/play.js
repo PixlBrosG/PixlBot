@@ -1,7 +1,3 @@
-// Uses youtube instead of spotify
-
-export const name = 'play';
-export const category = 'music';
 export const description = 'Play music';
 export const usage = '<query|URL>';
 export const aliases = ['p'];
@@ -10,8 +6,8 @@ export const permissions = [];
 import { video_basic_info, stream, search, yt_validate } from 'play-dl';
 import { AudioPlayerStatus, joinVoiceChannel, createAudioPlayer, createAudioResource } from "@discordjs/voice";
 
-import { ParseVideo, Embed } from '../API.js';
-import { songQueue } from '../index.js';
+import { ParseVideo, Embed } from '../../API.js';
+import { songQueue } from '../../index.js';
 
 async function VideoFinder(query)
 {

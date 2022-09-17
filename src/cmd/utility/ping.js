@@ -1,11 +1,9 @@
-export const name = 'ping';
-export const category = 'utility';
 export const description = 'Pong!';
 export const usage = '';
 export const aliases = ['pong'];
 export const permissions = [];
 
-import { Embed } from '../API.js';
+import { Embed } from '../../API.js';
 
 export async function execute(msg, _)
 {

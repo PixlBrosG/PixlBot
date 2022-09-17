@@ -1,12 +1,10 @@
-export const name = 'queue';
-export const category = 'music';
 export const description = 'Song queue';
 export const usage = '';
 export const aliases = ['q'];
 export const permissions = [];
 
-import { songQueue } from '../index.js';
-import { Embed, ParseVideo } from '../API.js';
+import { songQueue } from '../../index.js';
+import { Embed, ParseVideo } from '../../API.js';
 
 function queueEntry(song)
 {

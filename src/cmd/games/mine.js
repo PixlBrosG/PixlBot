@@ -1,12 +1,10 @@
-export const name = 'mine';
-export const category = 'games';
 export const description = 'Minesweeper';
 export const usage = '[<rows>] [<cols>] [<mines>]';
 export const aliases = [];
 export const permissions = [];
 
-import cfg from '../config.json' assert { type: 'json' };
-import { RandInt } from '../API.js';
+import cfg from '../../config.json' assert { type: 'json' };
+import { RandInt } from '../../API.js';
 
 function GetAdjacentCells(row, col, table)
 {

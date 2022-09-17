@@ -1,6 +1,8 @@
 node_modules/
 .vs/
 
+src/cmd/hidden/
+
 **.env
 package-lock.json
 suggestions.txt

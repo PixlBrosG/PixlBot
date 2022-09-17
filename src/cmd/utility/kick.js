@@ -1,5 +1,3 @@
-export const name = 'kick';
-export const category = 'utility';
 export const description = 'Kick a member';
 export const usage = '<member> [<reason>]';
 export const aliases = [];

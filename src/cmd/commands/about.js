@@ -1,14 +1,12 @@
-export const name = 'about';
-export const category = 'commands';
 export const description = 'About me!';
 export const usage = '';
 export const aliases = [];
 export const permissions = [];
 
-import { Embed } from '../API.js';
-import { client } from '../index.js';
+import { Embed } from 'pixlbot/src/API.js';
+import { client } from 'pixlbot/src/index.js';
 
-import about from '../../package.json' assert { type: 'json' };
+import about from 'pixlbot/package.json' assert { type: 'json' };
 
 export function execute(msg, _)
 {

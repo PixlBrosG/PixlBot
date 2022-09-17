@@ -1,11 +1,9 @@
-export const name = 'skip';
-export const category = 'music';
 export const description = 'Skip song';
 export const usage = '';
 export const aliases = ['s'];
 export const permissions = [];
 
-import { songQueue } from '../index.js';
+import { songQueue } from 'pixlbot/src/index.js';
 
 export function execute(msg, _)
 {

@@ -1,11 +1,9 @@
-export const name = 'replay';
-export const category = 'music';
 export const description = 'Replay song queue';
 export const usage = '';
 export const aliases = [];
 export const permissions = [];
 
-import { songQueue } from '../index.js';
+import { songQueue } from 'pixlbot/src/index.js';
 
 export function execute(msg, _)
 {

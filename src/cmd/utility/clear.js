@@ -1,5 +1,3 @@
-export const name = 'clear';
-export const category = 'utility';
 export const description = 'Clear messages from the current channel';
 export const usage = '<amount>';
 export const aliases = [];

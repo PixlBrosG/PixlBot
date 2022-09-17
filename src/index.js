@@ -4,26 +4,29 @@ import cfg from './config.json' assert { type: 'json' };
 
 import {} from 'dotenv/config';
 
+import {} from './commandloader.js';
+
 export const songQueue = new Map();
 
-import { Client, Intents } from 'discord.js';
-export const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS] });
+import { Client, GatewayIntentBits, ActivityType, Events } from 'discord.js';
 
-function UpdateStatus()
-{
-	client.user.setActivity(`${cfg.prefix}help`, {
-		type: 'LISTENING'
-	});
-}
+const intents = [
+	GatewayIntentBits.Guilds,
+	GatewayIntentBits.GuildMessages,
+	GatewayIntentBits.GuildMembers,
+	GatewayIntentBits.GuildVoiceStates,
+	GatewayIntentBits.MessageContent
+];
 
-client.on('ready', () =>
+export const client = new Client({ intents });
+
+client.on(Events.ClientReady, () =>
 {
-	console.log(`Logged in as ${client.user.tag}`);
-	UpdateStatus();
-	const interval = 3600 * 1000;
-	setInterval(UpdateStatus, interval);
+	console.info(`Logged in as ${client.user.tag}`);
+	
+	client.user.setActivity(`${cfg.prefix}help`, { type: ActivityType.Listening });
 });
 
-client.on('messageCreate', CommandHandler);
+client.on(Events.MessageCreate, CommandHandler);
 
 client.login(process.env.TOKEN);

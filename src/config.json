@@ -1,6 +1,6 @@
 {
 	"prefix": "$",
-	"embedColor": "#ff0000",
+	"embedColor": "#1f00cf",
 	"logCommands": false,
 	"logMessages": false,
 	"games": {
@@ -10,26 +10,9 @@
 			"mines": 15
 		}
 	},
-	"chatResponses": {
-		"question": [
-			"yes",
-			"no",
-			"hell no",
-			"definitely",
-			"haha u idiot",
-			"idk"
-		],
-		"statement": [
-			"thank u",
-			"u too lol",
-			"how rude",
-			"nobody asked",
-			"uh... ok...?",
-			"why u bully me",
-			"lol",
-			"you damn right",
-			"no u",
-			"<3"
-		]
+	"AI": {
+		"messages_stored": 3,
+		"temperature": 75.0,
+		"repetition_penalty": 1.0
 	}
 }

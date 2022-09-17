@@ -1,5 +1,3 @@
-export const name = 'suggest';
-export const category = 'commands';
 export const description = 'Suggest bot features';
 export const usage = '<suggestion>';
 export const aliases = [];
@@ -7,8 +5,8 @@ export const permissions = [];
 
 import { appendFileSync } from 'fs';
 
-import { Embed } from '../API.js';
-import { client } from '../index.js';
+import { Embed } from '../../API.js';
+import { client } from '../../index.js';
 
 export function execute(msg, args)
 {

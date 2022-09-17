@@ -1,11 +1,9 @@
-export const name = 'stop';
-export const category = 'music';
 export const description = 'Stop music';
 export const usage = '';
 export const aliases = [];
 export const permissions = [];
 
-import { songQueue } from '../index.js';
+import { songQueue } from '../../index.js';
 
 export function execute(msg, _)
 {

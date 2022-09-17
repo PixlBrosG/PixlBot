@@ -1,11 +1,9 @@
-export const name = 'coinflip';
-export const category = 'games';
 export const description = 'Flip a coin';
 export const usage = '';
 export const aliases = ['cf'];
 export const permissions = [];
 
-import { RandInt } from '../API.js';
+import { RandInt } from '../../API.js';
 
 export function execute()
 {

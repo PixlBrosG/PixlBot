@@ -1,5 +1,3 @@
-export const name = 'gif';
-export const category = 'commands';
 export const description = 'Send a GIF!';
 export const usage = '[<query>]';
 export const aliases = [];
@@ -8,7 +6,7 @@ export const permissions = [];
 import {} from 'dotenv/config';
 import fetch from 'node-fetch';
 
-import { RandInt } from '../API.js';
+import { RandInt } from '../../API.js';
 
 export async function execute(msg, args)
 {
