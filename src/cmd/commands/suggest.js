@@ -1,25 +1,31 @@
-export const description = 'Suggest bot features';
-export const usage = '<suggestion>';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
+
+import { bot } from 'pixlbot/main/index.js';
+
+import { DefaultEmbed } from 'pixlbot/utils/utils.js';
 
 import { appendFileSync } from 'fs';
 
-import { Embed } from '../../API.js';
-import { client } from '../../index.js';
-
-export function execute(msg, args)
+export class Command extends BaseCommand
 {
-	if (args.length == 0)
-		return 'Please specify a suggestion';
-	args = args.join(' ');
+	description = 'Suggest bot features';
+	usage = '<suggestion>';
 
-	const filePath = `suggestions.txt`;
-	appendFileSync(filePath,`${msg.author.tag} > ${args}\n`);
+	OnMessage(msg, args)
+	{
+		if (args.length === 0)
+			return 'Please specify a suggestion!'; // Text input box thingy
 
-	let embed = Embed(msg.author)
-		.setTitle('Suggestion received')
-		.setDescription(args)
-		.setThumbnail(client.user.displayAvatarURL());
-	msg.channel.send({ embeds: [embed] });
+		const suggestion = args.join(' ');
+		const filepath = 'suggestions.txt';
+
+		appendFileSync(filepath, `${msg.author.tag} -> ${suggestion}\n\n`);
+		bot.logger.info(`Received suggestion from ${msg.author.tag} -> ${suggestion}`);
+
+		let embed = DefaultEmbed(msg.author)
+			.setTitle('Suggestion received')
+			.setDescription(suggestion)
+			.setThumbnail(bot.client.user.displayAvatarURL());
+		msg.channel.send({ embeds: [embed] });
+	}
 }

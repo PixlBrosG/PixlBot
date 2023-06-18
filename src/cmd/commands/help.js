@@ -1,31 +1,38 @@
-export const description = 'Shows a list of commands';
-export const usage = '[<category>]';
-export const aliases = ['?'];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import cfg from 'pixlbot/src/config.json' assert { type: 'json' };
-import { Embed } from 'pixlbot/src/API.js';
+import { bot } from 'pixlbot/main/index.js';
 
-import { cmdInfo } from 'pixlbot/src/commandloader.js';
+import { DefaultEmbed } from 'pixlbot/utils/utils.js';
 
-export function execute(msg, args)
+import cfg from 'pixlbot/config.json' assert { type: 'json' };
+
+export class Command extends BaseCommand
 {
-	if (!args[0] || !cmdInfo.list[args[0].toLowerCase()])
+	description = 'Shows a list of commands';
+	usage = '[<category>]';
+	aliases = ['?'];
+
+	OnMessage(msg, args)
 	{
-		let embed = Embed(msg.author)
-			.setTitle('**Help!**')
-			.setDescription(`***${cfg.prefix}help <category>*** *for more info*`);
+		let info = args.length === 0 ? {} : bot.loader.GetInfo(args[0].toLowerCase());
+		if (Object.keys(info).length == 0)
+		{
+			info = bot.loader.GetInfo();
 
-		for (let [k, v] of Object.entries(cmdInfo.list))
-			embed.addFields({ name: k, value: v });
+			let embed = DefaultEmbed(msg.author)
+				.setTitle('**Help!**')
+				.setDescription(`***${cfg.prefix}help <category>*** *for more info*`);
+
+			for (let [name, value] of Object.entries(info))
+				embed.addFields({ name, value });
+			msg.channel.send({ embeds: [embed] });
+			return;
+		}
+
+		const category = args[0].toLowerCase();
+		let embed = DefaultEmbed(msg.author).setTitle(category);
+		for (let [name, value] of Object.entries(info))
+			embed.addFields({ name, value, inline: true });
 		msg.channel.send({ embeds: [embed] });
-		return;
 	}
-
-	let category = args[0].toLowerCase();
-
-	let embed = Embed(msg.author).setTitle(category);
-	for (let [k, v] of Object.entries(cmdInfo.data[category]))
-		embed.addField(k, v, true);
-	msg.channel.send({ embeds: [embed] });
 }

@@ -1,17 +1,21 @@
-export const description = 'Let me choose for you!';
-export const usage = '<...>';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { Embed, Choice } from '../../API.js';
+import { DefaultEmbed } from 'pixlbot/utils/utils.js';
+import { Choice } from 'pixlbot/utils/random.js';
 
-export function execute(msg, args)
+export class Command extends BaseCommand
 {
-	if (args.length === 0)
-		return 'Give me some choices \\:(';
+	description = 'Let me choose for you!';
+	usage = '<...>';
 
-	let embed = Embed(msg.author).setTitle('I choose...')
-		.setDescription(Choice(args));
+	OnMessage(msg, args)
+	{
+		if (args.length === 0)
+			return 'Give me some choices... \\:(';
 
-	msg.channel.send({ embeds: [embed] });
+		const embed = DefaultEmbed(msg.author)
+			.setTitle(':game_die: I choose...')
+			.setDescription(Choice(args));
+		msg.channel.send({ embeds: [embed] });
+	}
 }

@@ -1,12 +1,15 @@
-export const description = 'Reverse some message';
-export const usage = '<message>';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-export function execute(_, args)
+export class Command extends BaseCommand
 {
-	if (args.length == 0)
-		return 'esrever ot agassem a yficeps esaelP';
+	description = 'Reverse some message';
+	usage = '<message>';
 
-	return args.join(' ').split('').reverse().join('');
+	OnMessage(_msg, args)
+	{
+		if (args.length === 0)
+			return 'esrever ot agessem a yficeps esaelP';
+
+		return args.join(' ').split('').reverse().join('');
+	}
 }

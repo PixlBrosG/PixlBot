@@ -1,0 +1,18 @@
+{
+	"compilerOptions": {
+		"module": "NodeNext",
+		"target": "ES6",
+		"baseUrl": "./src",
+		"paths": {
+			"pixlbot/*": ["*"]
+		},
+		"moduleResolution": "nodenext",
+		"resolveJsonModule": true,
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true
+	},
+	"include": [
+		"src/**/*.js",
+		"node_modules/**/*"
+	]
+}

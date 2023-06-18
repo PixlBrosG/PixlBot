@@ -2,7 +2,6 @@
 	"prefix": "$",
 	"embedColor": "#1f00cf",
 	"logCommands": false,
-	"logMessages": false,
 	"games": {
 		"minesweeper": {
 			"rows": 9,

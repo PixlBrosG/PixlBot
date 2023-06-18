@@ -1,15 +1,27 @@
-export const description = 'Skip song';
-export const usage = '';
-export const aliases = ['s'];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { songQueue } from 'pixlbot/src/index.js';
+import { bot } from 'pixlbot/main/index.js';
 
-export function execute(msg, _)
+/**
+ * @typedef {import('discord.js').Message} Message
+ */
+
+export class Command extends BaseCommand
 {
-	if (!songQueue.has(msg.guild.id))
-		return 'Server queue is empty';
+	description = 'Skip song';
+	aliases = ['s'];
 
-	songQueue.get(msg.guild.id).audioPlayer.stop();
-	return ':fast_forward: Skipped song!';
+	/**
+	 * @param {Message} msg
+	 * @param {string[]} _args
+	 * @returns {string}
+	 */
+	OnMessage(msg, _args)
+	{
+		if (!bot.musicPlayer.queue.has(msg.guild.id))
+			return 'Server queue is empty';
+
+		bot.musicPlayer.queue.get(msg.guild.id).audioPlayer.stop();
+		return ':fast_forward: Skipped song!';
+	}
 }

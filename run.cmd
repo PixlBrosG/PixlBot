@@ -3,6 +3,6 @@
 title Pixlbot
 ::color 0a
 
-node --experimental-json-modules src/index
+node --experimental-json-modules src/main/index
 
 pause >nul

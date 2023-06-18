@@ -1,11 +1,14 @@
-export const description = 'Flip a coin';
-export const usage = '';
-export const aliases = ['cf'];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { RandInt } from '../../API.js';
+import { RandInt } from 'pixlbot/utils/random.js';
 
-export function execute()
+export class Command extends BaseCommand
 {
-    return `:coin: **${RandInt(2) ? 'Heads' : 'Tails'}**`;
+	description = 'Flip a coin';
+	aliases = ['cf'];
+
+	OnMessage(_msg, _args)
+	{
+		return `:coin: **${RandInt(2) ? 'Heads' : 'Tails'}**`;
+	}
 }

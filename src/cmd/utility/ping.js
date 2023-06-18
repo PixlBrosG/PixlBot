@@ -1,17 +1,30 @@
-export const description = 'Pong!';
-export const usage = '';
-export const aliases = ['pong'];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { Embed } from '../../API.js';
+import { DefaultEmbed } from 'pixlbot/utils/utils.js';
 
-export async function execute(msg, _)
+import { bot } from 'pixlbot/main/index.js';
+
+/**
+ * @typedef {import('discord.js').Message} Message
+ */
+
+export class Command extends BaseCommand
 {
-	let embed = Embed(msg.author).setTitle(':ping_pong: **Pong!**');
+	description = 'Pong!';
 
-	let m = await msg.channel.send({ embeds: [embed] });
+	/**
+	 * @param {Message} msg
+	 * @param {string[]} _args
+	 */
+	async OnMessage(msg, _args)
+	{
+		const botLatency = bot.client.ws.ping;
+		const userLatency = Date.now() - msg.createdTimestamp - botLatency;
 
-	let ping = m.createdTimestamp - msg.createdTimestamp;
-	embed.setDescription(`${ping} ms`);
-	m.edit({ embeds: [embed] });
+		let embed = DefaultEmbed(msg.author)
+			.setTitle(':ping_pong: **Pong!**')
+			.addFields({ name: 'Latency', value: `User: \`${userLatency}\` ms\nBot: \`${botLatency}\` ms` })
+
+		msg.channel.send({ embeds: [embed] });
+	}
 }

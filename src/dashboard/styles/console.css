@@ -1,0 +1,73 @@
+.console {
+	background-color: #282c34;
+	color: #f0f0f0;
+	padding: 10px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.console::-webkit-scrollbar {
+	width: 8px;
+}
+
+.console::-webkit-scrollbar-track {
+	background-color: #1c1c1c;
+}
+
+.console::-webkit-scrollbar-thumb {
+	background-color: #2362a1;
+	border-radius: 8px;
+}
+
+.log-entry {
+	margin: 0;
+	padding: 5px;
+}
+
+.log-entry.log-trace {
+	color: #0c89c5;
+}
+
+.log-entry.log-info {
+	color: #00FF99;
+}
+
+.log-entry.log-warn {
+	color: #f39c12;
+}
+
+.log-entry.log-error {
+	color: #ff0000;
+}
+
+.log-entry.log-critical {
+	background-color: #ff0000;
+	color: #ffff00;
+}
+
+.input-container {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	padding: 10px;
+	background-color: #1f2536;
+	flex-shrink: 0;
+}
+
+.input-field {
+	flex: 1;
+	padding: 8px;
+	border: none;
+	background-color: #363d5a;
+	color: #f0f0f0;
+}
+
+.send-button {
+	border: none;
+	background-color: #1e3a5e;
+	color: #f0f0f0;
+	padding: 8px 16px;
+	margin-left: 8px;
+	border-radius: 25px;
+	cursor: pointer;
+}

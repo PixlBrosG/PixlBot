@@ -1,26 +1,38 @@
-export const description = 'Remove song from queue';
-export const usage = '<index>';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { songQueue } from 'pixlbot/src/index.js';
-import { ParseVideo } from 'pixlbot/src/API.js';
+import { bot } from 'pixlbot/main/index.js';
 
-export function execute(msg, args)
+/**
+ * @typedef {import('discord.js').Message} Message
+ */
+
+export class Command extends BaseCommand
 {
-	let queue = songQueue.get(msg.guild.id);
-	if (!queue)
-		return 'Server queue is empty';
-	
-	let index = args.length >= 1 ? parseInt(args[0]) : NaN;
-	if (isNaN(index))
-		return 'Invalid index';
+	description = 'Remove song from queue';
+	usage = '<index>';
 
-	if (queue.songs.length <= index || index <= 0)
-		return 'Index out of range';
+	/**
+	 * @param {Message} msg
+	 * @param {string[]} args
+	 * @returns {string}
+	 */
+	OnMessage(msg, args)
+	{
+		if (!bot.musicPlayer.queue.has(msg.guildId))
+			return 'Server queue is empty';
 
-	let title = ParseVideo(queue.songs[index]);
+		let serverQueue = bot.musicPlayer.queue.get(msg.guildId);
+		
+		let index = args.length >= 1 ? parseInt(args[0]) : NaN;
+		if (isNaN(index))
+			return 'Invalid index';
 
-	queue.songs.splice(index, 1);
-	return `Removed ${title} from queue`;
+		if (!(serverQueue.queue.length > index > 0))
+			return 'Index out of range';
+
+		let title = bot.musicPlayer.Parse(serverQueue.queue[index]);
+
+		serverQueue.queue.splice(index, 1);
+		return `Removed ${title} from queue`;
+	}
 }

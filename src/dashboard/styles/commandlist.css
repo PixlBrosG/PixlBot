@@ -1,0 +1,42 @@
+.command-list {
+	padding: 10px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.command-list::-webkit-scrollbar {
+	width: 8px;
+}
+
+.command-list::-webkit-scrollbar-track {
+	background-color: #1c1c1c;
+}
+
+.command-list::-webkit-scrollbar-thumb {
+	background-color: #2362a1;
+	border-radius: 8px;
+}
+
+.command-list-entry {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0px;
+	border: 1px solid #0c89c5;
+	border-radius: 10px;
+	margin-bottom: 10px;
+
+	.button {
+		width: 35px;
+		height: 35px;
+		margin-right: 10px;
+	};
+}
+
+.command-list-entry h2 {
+	margin: 10px;
+}
+
+.command-list-entry.disabled {
+	accent-color: #000;
+}

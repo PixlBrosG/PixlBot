@@ -1,20 +1,23 @@
-export const description = 'About me!';
-export const usage = '';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { Embed } from 'pixlbot/src/API.js';
-import { client } from 'pixlbot/src/index.js';
+import { bot } from 'pixlbot/main/index.js';
 
-import about from 'pixlbot/package.json' assert { type: 'json' };
+import { DefaultEmbed } from 'pixlbot/utils/utils.js';
 
-export function execute(msg, _)
+import pkg from '../../../package.json' assert { type: 'json' };
+
+export class Command extends BaseCommand
 {
-	let embed = Embed(msg.author)
-		.setAuthor({ name: about.author })
-		.setTitle(`${about.name} ${about.version}`)
-		.setDescription(about.description)
-		.setThumbnail(client.user.displayAvatarURL())
-		.setURL(about.repository.url);
-	msg.channel.send({ embeds: [embed] });
+	description = 'About me!';
+
+	OnMessage(msg, _args)
+	{
+		const embed = DefaultEmbed(msg.author)
+			.setAuthor({ name: pkg.author })
+			.setTitle(`${pkg.name} ${pkg.version}`)
+			.setDescription(pkg.description)
+			.setThumbnail(bot.client.user.displayAvatarURL())
+			.setURL(pkg.repository.url);
+		msg.channel.send({ embeds: [embed] });
+	}
 }

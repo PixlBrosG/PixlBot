@@ -1,14 +1,17 @@
-export const description = 'Lecenshtein Distance!';
-export const usage = '<word1> <word2>';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { Embed, LevenshteinDistance } from '../../API.js';
+import { LevenshteinDistance } from 'pixlbot/utils/utils.js';
 
-export function execute(_, args)
+export class Command extends BaseCommand
 {
-	if (args.length !== 2)
-		return 'Give me exactly 2 words!';
+	description = 'Levenshtein Distance!';
+	usage = '<word1> <word2>';
 
-	return `Levenshtein Distance: ${LevenshteinDistance(args[0], args[1])}`;
+	OnMessage(_msg, args)
+	{
+		if (args.length !== 2)
+			return 'Give me exactly 2 words!';
+
+		return `Levenshtein Distance: ${LevenshteinDistance(args[0], args[1])}`;
+	}
 }

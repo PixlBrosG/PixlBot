@@ -1,18 +1,26 @@
-export const description = 'Send a GIF!';
-export const usage = '[<query>]';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
+
+import { Choice } from 'pixlbot/utils/random.js';
+
+import axios from 'axios';
 
 import {} from 'dotenv/config';
-import fetch from 'node-fetch';
 
-import { RandInt } from '../../API.js';
-
-export async function execute(msg, args)
+export class Command extends BaseCommand
 {
-	let url = `https://g.tenor.com/v1/search?q=${args.join('%20')}&key=${process.env.TENORAPIKEY}`;
-	let result = (await (await fetch(url)).json()).results;
-	result = result[RandInt(result.length)].url;
+	description = 'Send a GIF!';
+	usage = '[<query>]';
 
-	msg.channel.send({ content: result });
+	async OnMessage(msg, args)
+	{
+		const query = args.length === 0 ? '' : `q=${args.join('%20')}&`;
+		const url = `https://g.tenor.com/v1/search?${query}key=${process.env.TENORAPIKEY}`;
+
+		const results = (await axios.get(url)).data.results;
+
+		if (results.length !== 0)
+			msg.channel.send({ content: Choice(results).url });
+		else
+			return `${args.join(' ')} doesn't exist`;
+	}
 }

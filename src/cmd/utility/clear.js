@@ -1,20 +1,26 @@
-export const description = 'Clear messages from the current channel';
-export const usage = '<amount>';
-export const aliases = [];
-export const permissions = ['MANAGE_MESSAGES'];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-export async function execute(msg, args)
+import { PermissionFlagsBits } from "discord.js";
+
+export class Command extends BaseCommand
 {
-	await msg.delete();
+	description = 'Clear messages from the current channel';
+	usage = '<amount>';
+	permissions = [PermissionFlagsBits.ManageMessages];
 
-	let amount = parseInt(args[0]);
-	if (amount > 100)
-		amount = 100;
+	async OnMessage(msg, args)
+	{
+		await msg.delete();
 
-	if (isNaN(amount))
-		return 'Amount should be an integer';
-	if (amount < 0)
-		return 'Amount should not be less than 0';
+		let amount = parseInt(args[0]);
+		if (amount > 100)
+			amount = 100;
 
-	msg.channel.bulkDelete(amount, true);
+		if (isNaN(amount))
+			return 'Amount should be an integer';
+		if (amount <= 0)
+			return 'Amount should be more than zero';
+
+		msg.channel.bulkDelete(amount, true);
+	}
 }

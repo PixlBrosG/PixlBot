@@ -1,16 +1,28 @@
-export const description = 'Replay song queue';
-export const usage = '';
-export const aliases = [];
-export const permissions = [];
+import { BaseCommand } from 'pixlbot/main/basecommand.js';
 
-import { songQueue } from 'pixlbot/src/index.js';
+import { bot } from 'pixlbot/main/index.js';
 
-export function execute(msg, _)
+/**
+ * @typedef {import('discord.js').Message} Message
+ */
+
+export class Command extends BaseCommand
 {
-	if (!songQueue.has(msg.guild.id))
-		return 'Server queue is empty';
+	description = 'Remove song from queue';
+	usage = '<index>'
 
-	let queue = songQueue.get(msg.guild.id);
-	queue.replay = !queue.replay;
-	return `:repeat: Replay: ${queue.replay ? '✅' : '❌'}`;
+	/**
+	 * @param {Message} msg
+	 * @param {string[]} _args
+	 * @returns {string}
+	 */
+	OnMessage(msg, _args)
+	{
+		if (!bot.musicPlayer.queue.has(msg.guildId))
+			return 'Server queue is empty';
+
+		let queue = bot.musicPlayer.queue.get(msg.guildId);
+		queue.replay = !queue.replay;
+		return `:repeat: Replay: ${queue.replay ? '✅' : '❌'}`;
+	}
 }
