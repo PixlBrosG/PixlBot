@@ -2,6 +2,23 @@
 	"prefix": "$",
 	"embedColor": "#1f00cf",
 	"logCommands": false,
+	"commandLoader": {
+		"defaultCommandMeta": {
+			"description": "",
+			"usage": "",
+			"aliases": [],
+			"permissions": [],
+			"parameters": [],
+			"enabled": true
+		},
+		"notifyConflicts": true,
+		"requireExplicitConfig": false,
+		"requireMessageHandler": true,
+		"requireInteractionHandler": false
+	},
+	"webServer": {
+		"port": 3000
+	},
 	"games": {
 		"minesweeper": {
 			"rows": 9,
@@ -9,9 +26,12 @@
 			"mines": 15
 		}
 	},
-	"AI": {
-		"messages_stored": 3,
-		"temperature": 75.0,
-		"repetition_penalty": 1.0
+	"chatbot": {
+		"maxStoredMessages": 5,
+		"temperature": 0.8,
+		"repetitionPenalty": 1.0
+	},
+	"playbackManager": {
+		"maxQueueLength": -1
 	}
 }

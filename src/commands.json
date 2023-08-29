@@ -1,0 +1,104 @@
+{
+	"general": {
+		"about": {
+			"description": "About me!"
+		},
+		"choose": {
+			"description": "Let me choose for you",
+			"usage": "<...options>"
+		},
+		"difference": {
+			"description": "Levenshtein distance!",
+			"usage": "<text> <text>"
+		},
+		"gif": {
+			"description": "Send a GIF!",
+			"usage": "[<query>]"
+		},
+		"help": {
+			"description": "Shows a list of commands",
+			"usage": "[<category>]",
+			"aliases": ["?"]
+		},
+		"image": {
+			"description": "Generate an image using AI",
+			"usage": "<prompt>",
+			"aliases": ["img"]
+		},
+		"qotd": {
+			"description": "quote of the day"
+		},
+		"quote": {
+			"description": "Get a random quote from a list of 100 quotes"
+		},
+		"random": {
+			"description": "Random integer between <min> (inclusive) and <max> (exclusive)",
+			"usage": "[<min>] <max>"
+		},
+		"reverse": {
+			"description": "Reverse some message",
+			"usage": "<message>"
+		},
+		"suggest": {
+			"description": "Suggest bot features",
+			"usage": "<suggestion>"
+		},
+		"test": {
+			"description": "Test command"
+		}
+	},
+	"games": {
+		"coinflip": {
+			"description": "Flip a coin",
+			"aliases": ["cf"]
+		},
+		"minesweeper": {
+			"description": "Minesweeper",
+			"usage": "[<rows>] [<columns>] [<mines>]"
+		}
+	},
+	"playback": {
+		"play": {
+			"description": "Play YouTube video",
+			"usage": "<query|url>",
+			"aliases": ["p"]
+		},
+		"queue": {
+			"description": "Video queue",
+			"aliases": ["q"]
+		},
+		"remove": {
+			"description": "Remove song from queue",
+			"usage": "<index>"
+		},
+		"replay": {
+			"description": "Toggle queue replay"
+		},
+		"search": {
+			"description": "Search for videos",
+			"usage": "<query>"
+		},
+		"skip": {
+			"description": "Skip song",
+			"aliases": ["s"]
+		},
+		"stop": {
+			"description": "Stop music"
+		}
+	},
+	"utility": {
+		"clear": {
+			"description": "Clear messages from the current channel",
+			"usage": "<amount>",
+			"permissions": ["ManageMessages"]
+		},
+		"kick": {
+			"description": "Kick a member",
+			"usage": "<member> [<reason>]",
+			"permissions": ["KickMembers"]
+		},
+		"ping": {
+			"description": "Pong!"
+		}
+	}
+}
