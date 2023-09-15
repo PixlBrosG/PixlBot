@@ -121,7 +121,7 @@ export class MusicPlayer
 					return;
 
 				serverQueue.connection.disconnect();
-				serverQueue.connection.destroy(true);
+//				serverQueue.connection.destroy(true);
 
 				this.queue.delete(guildID);
 			}, 30000);

@@ -6,8 +6,6 @@ import cfg from 'pixlbot/config.json' assert { type: 'json' };
 
 import axios from 'axios';
 
-import {} from 'dotenv/config';
-
 /**
  * @typedef {import('discord.js').Message} Message
  */
@@ -23,8 +21,9 @@ export class AI
 	constructor()
 	{
 		this.endpoint = 'https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill';
-		//this.endpoint = 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-large';
+//		this.endpoint = 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-large';
 
+		/** @type {import('axios').AxiosRequestHeaders} */
 		this.headers = {
 			'Authorization': `Bearer ${process.env.HUGGINGFACEAPIKEY}`,
 			'Content-Type': 'application/json',
@@ -56,7 +55,7 @@ export class AI
 			switch (tokens[0].toLowerCase())
 			{
 			case 'stop':
-				data.delete(msg.author.id);
+				this.data.delete(msg.author.id);
 				embed.setDescription('Memory wiped...');
 				break;
 			case 'memget':
@@ -71,8 +70,10 @@ export class AI
 			return;
 		}
 
-		const embed = DefaultEmbed(msg.author)
-			.setDescription('Generating response...\nPlease be patient');
+		let embed = DefaultEmbed(msg.author)
+			.setAuthor({ name: message })
+			.setTitle('Generating response...')
+			.setDescription('Please be patient');
 		const m = await msg.reply({ embeds: [embed] });
 			
 		const conversation = this.data.has(msg.author.id) ? this.data.get(msg.author.id) : {};
@@ -84,7 +85,7 @@ export class AI
 		catch (error)
 		{
 			bot.logger.error(`[AI] Error: ${error}`);
-			embed.setTitle('An internal error occured')
+			embed = DefaultEmbed(msg.author).setTitle('An internal error occured')
 				.setDescription(error.message);
 			m.edit({ embeds: [embed] });
 			return;
@@ -95,6 +96,7 @@ export class AI
 			response.conversation.past_user_inputs.shift();
 			response.conversation.generated_responses.shift();
 		}
+
 		this.data.set(msg.author.id, response.conversation);
 
 		if (response.conversation.generated_responses.length > 1)
@@ -113,7 +115,8 @@ export class AI
 			}
 		}
 
-		embed.setDescription(response.generated_text);
+		embed = DefaultEmbed(msg.author)
+			.setDescription(response.generated_text);
 		m.edit({ embeds: (embed2 ? [embed, embed2] : [embed]) });
 	}
 
@@ -124,18 +127,21 @@ export class AI
 	 */
 	async RequestResponse(conversation, message)
 	{
+		const seed = Math.floor(Math.random() * 1000000);
+
 		const payload = {
 			inputs: {
 				past_user_inputs: conversation.past_user_inputs,
 				generated_responses: conversation.generated_responses,
-				text: message
+				text: `${message} [seed=${seed}]`
 			},
 			parameters: {
 				temperature: cfg.AI.temperature,
 				repetition_penalty: cfg.AI.repetition_penalty
 			},
 			options: {
-				wait_for_model: true
+				wait_for_model: true,
+				use_cache: false
 			}
 		};
 

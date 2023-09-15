@@ -4,8 +4,6 @@ import { Choice } from 'pixlbot/utils/random.js';
 
 import axios from 'axios';
 
-import {} from 'dotenv/config';
-
 export class Command extends BaseCommand
 {
 	description = 'Send a GIF!';

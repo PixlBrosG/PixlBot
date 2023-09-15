@@ -1,6 +1,6 @@
 {
 	"name": "pixlbot",
-	"version": "6.0.0",
+	"version": "6.1.0",
 	"description": "Utility bot for Discord",
 	"main": "./src/main/index.js",
 	"type": "module",
@@ -23,8 +23,9 @@
 	"dependencies": {
 		"@discordjs/voice": "^0.16.0",
 		"axios": "^1.4.0",
+		"canvas": "^2.11.2",
 		"discord.js": "^14.11.0",
-		"dotenv": "^16.1.4",
+		"dotenv": "^16.3.1",
 		"express": "^4.18.2",
 		"ffmpeg-static": "^5.1.0",
 		"libsodium": "^0.7.11",
